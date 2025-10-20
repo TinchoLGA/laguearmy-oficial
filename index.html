@@ -1,28 +1,49 @@
 <!doctype html>
 <html lang="es">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LagueArmy</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="LagueArmy — Tu central gamer con streams en vivo, YouTube, Twitch y Kick." />
+    <meta name="theme-color" content="#0a0a0f" />
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/favicon.png" />
+    <title>Bienvenido a la LagueArmy</title>
 
-    <!-- Fuente gamer -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Fuente moderna -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
 
-    <!-- Estilos principales -->
-    <link rel="stylesheet" href="/src/index.css" />
+    <!-- Favicon / Avatar -->
+    <link rel="icon" type="image/png" href="/Miniatura.png" />
 
-    <!-- Meta -->
-    <meta name="description" content="Bienvenido a LagueArmy - Comunidad Gamer y canal de streaming oficial." />
-    <meta name="theme-color" content="#1E90FF" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Configuración de Tailwind personalizada -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              gamerblue: '#00bfff',
+              gamerblack: '#0a0a0f',
+            },
+            fontFamily: {
+              sans: ['Poppins', 'sans-serif'],
+            },
+          },
+        },
+      };
+    </script>
   </head>
 
-  <body class="bg-black text-white font-[Orbitron]">
+  <body class="bg-gradient-to-b from-gamerblack to-black text-white min-h-screen">
     <div id="root"></div>
 
-    <!-- React principal -->
+    <!-- Script principal de React -->
     <script type="module" src="/src/main.jsx"></script>
+
+    <!-- Créditos opcionales -->
+    <footer class="text-center text-xs text-slate-500 mt-6 pb-6">
+      LagueArmy © 2025 — Creado con 💙 para la comunidad gamer
+    </footer>
   </body>
 </html>

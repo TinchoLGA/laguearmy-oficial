@@ -1,49 +1,14 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="LagueArmy — Tu central gamer con streams en vivo, YouTube, Twitch y Kick." />
-    <meta name="theme-color" content="#0a0a0f" />
-
-    <title>Bienvenido a la LagueArmy</title>
-
-    <!-- Fuente moderna -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
-
-    <!-- Favicon / Avatar -->
-    <link rel="icon" type="image/png" href="/Miniatura.png" />
-
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Configuración de Tailwind personalizada -->
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              gamerblue: '#00bfff',
-              gamerblack: '#0a0a0f',
-            },
-            fontFamily: {
-              sans: ['Poppins', 'sans-serif'],
-            },
-          },
-        },
-      };
-    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="LagueArmy - Tu central gamer oficial" />
+    <title>LagueArmy</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
   </head>
-
-  <body class="bg-gradient-to-b from-gamerblack to-black text-white min-h-screen">
+  <body>
     <div id="root"></div>
-
-    <!-- Script principal de React -->
     <script type="module" src="/src/main.jsx"></script>
-
-    <!-- Créditos opcionales -->
-    <footer class="text-center text-xs text-slate-500 mt-6 pb-6">
-      LagueArmy © 2025 — Creado con 💙 para la comunidad gamer
-    </footer>
   </body>
 </html>

@@ -1,93 +1,79 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap");
 
-html, body, #root {
-  height: 100%;
+:root {
+  --primary-color: #00bfff;
+  --secondary-color: #1e1e1e;
+  --accent-color: #ff0000;
+}
+
+body {
   margin: 0;
+  font-family: "Orbitron", sans-serif;
   background-color: #0a0a0a;
-  color: #e0e0e0;
-  font-family: 'Orbitron', sans-serif;
-}
-
-/* Banner */
-header {
-  background: linear-gradient(135deg, #1E90FF, #0b132b);
-  color: white;
-}
-
-/* Botones principales */
-a, button {
-  transition: all 0.3s ease;
-}
-
-a:hover, button:hover {
-  transform: scale(1.05);
-  opacity: 0.9;
-}
-
-/* Botones personalizados */
-.twitch-btn {
-  background-color: #6441A5;
-  color: white;
-}
-
-.kick-btn {
-  background-color: #53FC18; /* Verde brillante */
-  color: #0a0a0a;
-}
-
-.youtube-btn {
-  background-color: #FF0000;
-  color: white;
-}
-
-/* Panel de edición */
-details {
-  background: #111;
-  color: #ddd;
-}
-
-input, textarea, select {
-  background-color: #1a1a1a;
-  border: 1px solid #333;
   color: #fff;
 }
 
-input[type="file"] {
-  border: none;
+a {
+  text-decoration: none;
 }
 
-input:focus, textarea:focus {
-  border-color: #1E90FF;
-  outline: none;
+button {
+  cursor: pointer;
 }
 
-/* Secciones */
-section {
-  background: #141414;
-  border: 1px solid #222;
+img {
+  display: block;
+  max-width: 100%;
 }
 
-/* Iframes */
-iframe {
-  border: none;
+.text-cyan-400 {
+  color: #00bfff;
 }
 
-/* Footer */
-footer {
-  color: #666;
-  border-top: 1px solid #222;
-  margin-top: 20px;
-  padding-top: 10px;
+.bg-gray-800 {
+  background-color: #1f1f1f;
 }
 
-/* Animaciones */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+.bg-gradient-to-b {
+  background: linear-gradient(to bottom, #111, #000);
 }
 
-.fade-in {
-  animation: fadeIn 0.8s ease-in-out;
+.bg-gradient-to-r {
+  background: linear-gradient(to right, #003366, #000);
+}
+
+.rounded-2xl {
+  border-radius: 1rem;
+}
+
+.shadow-lg {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.hover\:opacity-80:hover {
+  opacity: 0.8;
+}
+
+.hover\:opacity-90:hover {
+  opacity: 0.9;
+}
+
+.transition {
+  transition: 0.3s ease;
+}
+
+.text-slate-400 {
+  color: #9ca3af;
+}
+
+.text-slate-300 {
+  color: #d1d5db;
+}
+
+.bg-gray-700 {
+  background-color: #2d2d2d;
+}
+
+.bg-blue-600 {
+  background-color: #2563eb;
 }

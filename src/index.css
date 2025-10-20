@@ -2,81 +2,92 @@
 @tailwind components;
 @tailwind utilities;
 
-/* --- Fondo general oscuro gamer --- */
 html, body, #root {
   height: 100%;
-  background: linear-gradient(180deg, #0a0a0f 0%, #050507 100%);
-  color: #ffffff;
-  font-family: 'Poppins', sans-serif;
-  overflow-x: hidden;
+  margin: 0;
+  background-color: #0a0a0a;
+  color: #e0e0e0;
+  font-family: 'Orbitron', sans-serif;
 }
 
-/* --- Tipografía general --- */
-h1, h2, h3, h4, h5 {
-  font-weight: 700;
-  letter-spacing: 0.5px;
-}
-
-/* --- Botones gamer --- */
-button, a {
-  transition: all 0.25s ease;
-}
-
-button:hover, a:hover {
-  transform: scale(1.05);
-  filter: brightness(1.2);
-}
-
-/* --- Avatar --- */
-.avatar-ring {
-  box-shadow: 0 0 20px #00bfff;
-}
-
-/* --- Contenedores y tarjetas --- */
-section, .card, .panel {
-  background: rgba(30, 30, 45, 0.85);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(0, 191, 255, 0.1);
-  border-radius: 16px;
-  box-shadow: 0 0 20px rgba(0, 191, 255, 0.1);
-}
-
-/* --- Banner superior --- */
+/* Banner */
 header {
-  background: radial-gradient(circle at center, #002b55 0%, #000814 90%);
-  color: #00bfff;
-  text-shadow: 0 0 10px rgba(0, 191, 255, 0.7);
+  background: linear-gradient(135deg, #1E90FF, #0b132b);
+  color: white;
 }
 
-/* --- Texto sutil --- */
-.text-muted {
-  color: #b3b3b3;
+/* Botones principales */
+a, button {
+  transition: all 0.3s ease;
 }
 
-/* --- Enlaces principales --- */
-a {
-  text-decoration: none;
+a:hover, button:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
 }
 
-a:active {
-  transform: scale(0.98);
+/* Botones personalizados */
+.twitch-btn {
+  background-color: #6441A5;
+  color: white;
 }
 
-/* --- Efecto de transición suave al cargar --- */
-* {
-  transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+.kick-btn {
+  background-color: #53FC18; /* Verde brillante */
+  color: #0a0a0a;
 }
 
-/* --- Scroll personalizado --- */
-::-webkit-scrollbar {
-  width: 8px;
+.youtube-btn {
+  background-color: #FF0000;
+  color: white;
 }
 
-::-webkit-scrollbar-track {
-  background: #0f0f14;
+/* Panel de edición */
+details {
+  background: #111;
+  color: #ddd;
 }
 
-::-webkit-scrollbar-thumb {
-  background: #00bfff;
-  border-radius: 4px;
+input, textarea, select {
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  color: #fff;
+}
+
+input[type="file"] {
+  border: none;
+}
+
+input:focus, textarea:focus {
+  border-color: #1E90FF;
+  outline: none;
+}
+
+/* Secciones */
+section {
+  background: #141414;
+  border: 1px solid #222;
+}
+
+/* Iframes */
+iframe {
+  border: none;
+}
+
+/* Footer */
+footer {
+  color: #666;
+  border-top: 1px solid #222;
+  margin-top: 20px;
+  padding-top: 10px;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease-in-out;
 }

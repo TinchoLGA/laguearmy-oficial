@@ -1,145 +1,132 @@
 @import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap");
 
 :root {
-  --bg-dark: #0a0a0a;
-  --bg-card: #161616;
-  --accent: #00c8ff;
-  --twitch: #9146ff;
-  --kick: #53fc18;
-  --youtube: #ff0000;
-  --art: #ff70a6;
-  --text: #ffffff;
+  --bg: #000;
+  --card: #111;
+  --highlight: #0ff;
+  --text: #fff;
 }
 
 body {
   margin: 0;
-  font-family: "Orbitron", sans-serif;
-  background: var(--bg-dark);
+  background-color: var(--bg);
   color: var(--text);
+  font-family: "Orbitron", sans-serif;
   text-align: center;
 }
 
 .header {
-  background: linear-gradient(90deg, #003c4f, #1a1a1a, #002d48);
-  border-radius: 12px;
-  margin: 1rem auto;
-  padding: 1rem;
+  background: linear-gradient(90deg, #004080, #002040);
+  border-radius: 15px;
+  padding: 15px;
+  margin: 20px auto;
   width: 80%;
-  box-shadow: 0 0 15px #00ffff40;
+  box-shadow: 0 0 20px #00ffff44;
 }
 
-.profile {
+.logo {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  gap: 10px;
 }
 
-.avatar {
+.logo img {
   width: 80px;
-  height: 80px;
   border-radius: 50%;
-  border: 3px solid var(--accent);
 }
 
-.title {
-  color: var(--accent);
-  margin: 0;
-}
-
-.subtitle {
-  color: #ccc;
-  font-size: 0.9rem;
+h1 {
+  font-size: 1.8em;
+  color: #00ffff;
 }
 
 .buttons {
   display: flex;
   justify-content: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin-bottom: 1rem;
+  gap: 10px;
+  margin-top: 15px;
 }
 
-.btn {
+button {
   border: none;
-  padding: 0.6rem 1.2rem;
-  font-family: "Orbitron";
-  font-weight: 600;
-  color: white;
-  border-radius: 6px;
+  padding: 10px 16px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: 0.3s;
+  font-family: inherit;
+  font-weight: bold;
 }
 
-.btn:hover {
-  transform: scale(1.1);
+.twitch {
+  background-color: #9146ff;
+  color: white;
 }
-
-.btn.twitch {
-  background-color: var(--twitch);
+.kick {
+  background-color: #52ff00;
+  color: black;
 }
-
-.btn.kick {
-  background-color: var(--kick);
+.ytgamer {
+  background-color: #ff0000;
+  color: white;
+}
+.ytart {
+  background-color: #ff7aa2;
+  color: white;
+}
+.hide {
+  background-color: #eee;
   color: black;
 }
 
-.btn.youtube {
-  background-color: var(--youtube);
-}
-
-.btn.youtube-art {
-  background-color: var(--art);
-}
-
-.video-container {
-  background-color: var(--bg-card);
-  border-radius: 12px;
+.embed-wrap {
+  margin: 20px auto;
   width: 80%;
-  margin: 1rem auto;
-  padding: 1rem;
-  box-shadow: 0 0 10px #00ffff40;
-}
-
-.embed-frame {
-  width: 100%;
   height: 400px;
+  background-color: #111;
   border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 15px #00ffff44;
 }
 
-.latest {
-  background-color: var(--bg-card);
-  border-radius: 12px;
-  width: 80%;
-  margin: 1rem auto;
-  padding: 1rem;
-  box-shadow: 0 0 10px #00ffff40;
+.embed-wrap iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
 .videos {
+  margin-top: 30px;
+}
+
+.video-list {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 20px;
+  padding: 20px;
 }
 
-.video-card {
-  background: #101010;
-  border-radius: 8px;
-  padding: 0.5rem;
-  width: 280px;
+.video-list a {
+  background-color: #111;
+  border-radius: 10px;
+  text-decoration: none;
+  color: white;
+  width: 300px;
+  overflow: hidden;
+  box-shadow: 0 0 15px #00ffff44;
+  transition: transform 0.3s ease;
 }
 
-.video-card img {
+.video-list a:hover {
+  transform: scale(1.05);
+}
+
+.video-list img {
   width: 100%;
-  border-radius: 6px;
 }
 
-.footer {
-  margin: 2rem 0;
-  color: #aaa;
-}
-
-.heart {
-  color: red;
+footer {
+  margin-top: 30px;
+  padding: 20px;
+  color: #ccc;
 }

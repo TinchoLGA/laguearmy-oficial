@@ -1,29 +1,36 @@
 import React, { useState, useEffect } from "react";
-import "./index.css";
 
 export default function App() {
-  // --- Configuración general ---
-  const config = {
-    twitchUrl: "https://www.twitch.tv/tincholga",
-    kickUrl: "https://kick.com/tincholisl-ga",
-    youtubeChannelId: "UCSDMfWES3smkNGbpbBAtz1A", // Canal gamer
-    youtubeArtChannelId: "UCLTue1FuQ4Y9PVcyuvwdMQ", // Canal artístico
-    apiKey: "AIzaSyDdTnC50jZgmJ7FuAJYVlhUIk6jhIFd8QE"
-  };
-
   const [latestVideo, setLatestVideo] = useState(null);
   const [latestArtVideo, setLatestArtVideo] = useState(null);
   const [showEmbed, setShowEmbed] = useState("none");
 
-  // --- Obtener el último video de un canal de YouTube ---
+  // 🔧 Config
+  const config = {
+    twitchUrl: "https://www.twitch.tv/tincholga",
+    kickUrl: "https://kick.com/tincholis-lga",
+    youtubeChannelId: "UCSMdFWEs3smhKGbpb8BAZ1A", // canal gamer
+    youtubeArtChannelId: "UCLTue1FuQ4Y9PvcyuvwdMQ", // canal artístico
+    apiKey: "AIzaSyDdTnC50jZgmJ7FuAJYVlhUIk6jhIFd8QE",
+    domain: "laguearmy-oficial.vercel.app"
+  };
+
+  // 📺 Obtener últimos videos
   useEffect(() => {
     async function fetchLatest(channelId, setter) {
       try {
         const url = `https://www.googleapis.com/youtube/v3/search?key=${config.apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=1`;
         const res = await fetch(url);
         const data = await res.json();
-        if (data.items && data.items.length > 0) {
-          setter(data.items[0]);
+        if (data?.items?.length > 0) {
+          const vid = data.items.find(it => it.id.videoId);
+          if (vid) {
+            setter({
+              id: vid.id.videoId,
+              title: vid.snippet.title,
+              thumb: vid.snippet.thumbnails.medium.url
+            });
+          }
         }
       } catch (err) {
         console.error("Error obteniendo videos:", err);
@@ -34,106 +41,118 @@ export default function App() {
     fetchLatest(config.youtubeArtChannelId, setLatestArtVideo);
   }, []);
 
-  // --- Componentes embeds ---
-  const TwitchEmbed = () => (
-    <iframe
-      title="Twitch Stream"
-      src="https://player.twitch.tv/?channel=tincholga&parent=laguearmy-oficial.vercel.app&muted=false&autoplay=false"
-      allowFullScreen
-      frameBorder="0"
-      className="embed-frame"
-    ></iframe>
-  );
-
-  const KickEmbed = () => (
-    <iframe
-      title="Kick Stream"
-      src="https://player.kick.com/tincholisl-ga"
-      allowFullScreen
-      frameBorder="0"
-      className="embed-frame"
-    ></iframe>
-  );
-
-  const YouTubeEmbed = ({ video }) =>
-    video ? (
-      <iframe
-        title="YouTube Video"
-        src={`https://www.youtube.com/embed/${video.id.videoId}`}
-        allowFullScreen
-        frameBorder="0"
-        className="embed-frame"
-      ></iframe>
-    ) : (
-      <p>Cargando video...</p>
+  // 🎥 EMBEDS
+  const TwitchEmbed = ({ url }) => {
+    const channel = url.split("/").pop();
+    const src = `https://player.twitch.tv/?channel=${channel}&parent=${config.domain}&muted=false&autoplay=false`;
+    return (
+      <div className="embed-wrap">
+        <iframe
+          title="Twitch"
+          src={src}
+          allowFullScreen
+          frameBorder="0"
+        ></iframe>
+      </div>
     );
+  };
 
+  const KickEmbed = ({ url }) => {
+    const channel = url.split("/").pop();
+    const src = `https://player.kick.com/${channel}?autoplay=false`;
+    return (
+      <div className="embed-wrap">
+        <iframe
+          title="Kick"
+          src={src}
+          allowFullScreen
+          frameBorder="0"
+        ></iframe>
+      </div>
+    );
+  };
+
+  // 🎞️ Video de YouTube
+  const YouTubeEmbed = ({ videoId }) => {
+    const src = `https://www.youtube.com/embed/${videoId}`;
+    return (
+      <div className="embed-wrap">
+        <iframe
+          title="YouTube"
+          src={src}
+          allowFullScreen
+          frameBorder="0"
+        ></iframe>
+      </div>
+    );
+  };
+
+  // 🎨 Render principal
   return (
-    <div className="app">
+    <div className="root">
       <header className="header">
-        <div className="profile">
-          <img src="/Miniatura.png" alt="Avatar" className="avatar" />
-          <div>
-            <h1 className="title">LAGUEARMY</h1>
-            <p className="subtitle">Bienvenido a la LagueArmy</p>
-          </div>
+        <div className="logo">
+          <img src="/Miniatura.png" alt="Logo" />
+          <h1>LAGUEARMY</h1>
+        </div>
+        <p>Bienvenido a la LagueArmy</p>
+        <div className="buttons">
+          <button className="twitch" onClick={() => setShowEmbed("twitch")}>
+            Twitch
+          </button>
+          <button className="kick" onClick={() => setShowEmbed("kick")}>
+            Kick
+          </button>
+          <button className="ytgamer" onClick={() => setShowEmbed("ytgamer")}>
+            YouTube TinchoLGA
+          </button>
+          <button className="ytart" onClick={() => setShowEmbed("ytart")}>
+            YouTube Artístico
+          </button>
+          <button className="hide" onClick={() => setShowEmbed("none")}>
+            Ocultar
+          </button>
         </div>
       </header>
 
-      <section className="buttons">
-        <button onClick={() => setShowEmbed("twitch")} className="btn twitch">
-          Twitch
-        </button>
-        <button onClick={() => setShowEmbed("kick")} className="btn kick">
-          Kick
-        </button>
-        <button onClick={() => setShowEmbed("youtube")} className="btn youtube">
-          YouTube TinchoLGA
-        </button>
-        <button
-          onClick={() => setShowEmbed("youtubeArt")}
-          className="btn youtube-art"
-        >
-          YouTube Artístico
-        </button>
-        <button onClick={() => setShowEmbed("none")} className="btn hide">
-          Ocultar
-        </button>
-      </section>
-
-      <section className="video-container">
-        {showEmbed === "twitch" && <TwitchEmbed />}
-        {showEmbed === "kick" && <KickEmbed />}
-        {showEmbed === "youtube" && <YouTubeEmbed video={latestVideo} />}
-        {showEmbed === "youtubeArt" && (
-          <YouTubeEmbed video={latestArtVideo} />
+      <main>
+        {showEmbed === "twitch" && <TwitchEmbed url={config.twitchUrl} />}
+        {showEmbed === "kick" && <KickEmbed url={config.kickUrl} />}
+        {showEmbed === "ytgamer" && latestVideo && (
+          <YouTubeEmbed videoId={latestVideo.id} />
         )}
-      </section>
+        {showEmbed === "ytart" && latestArtVideo && (
+          <YouTubeEmbed videoId={latestArtVideo.id} />
+        )}
+      </main>
 
-      <section className="latest">
+      <section className="videos">
         <h2>Últimos videos</h2>
-        <div className="videos">
+        <div className="video-list">
           {latestVideo && (
-            <div className="video-card">
-              <img src={latestVideo.snippet.thumbnails.medium.url} alt="Video" />
-              <p>{latestVideo.snippet.title}</p>
-            </div>
+            <a
+              href={`https://www.youtube.com/watch?v=${latestVideo.id}`}
+              target="_blank"
+            >
+              <img src={latestVideo.thumb} alt={latestVideo.title} />
+              <p>{latestVideo.title}</p>
+            </a>
           )}
           {latestArtVideo && (
-            <div className="video-card">
-              <img
-                src={latestArtVideo.snippet.thumbnails.medium.url}
-                alt="Video artístico"
-              />
-              <p>{latestArtVideo.snippet.title}</p>
-            </div>
+            <a
+              href={`https://www.youtube.com/watch?v=${latestArtVideo.id}`}
+              target="_blank"
+            >
+              <img src={latestArtVideo.thumb} alt={latestArtVideo.title} />
+              <p>{latestArtVideo.title}</p>
+            </a>
           )}
         </div>
       </section>
 
-      <footer className="footer">
+      <footer>
         <p>
-          LagueArmy · Hecho con <span className="heart">❤️</span>
+          LagueArmy · Hecho con <span>❤️</span>
         </p>
       </footer>
     </div>

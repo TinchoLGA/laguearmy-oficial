@@ -62,7 +62,7 @@ export default function App() {
   const KickEmbed = ({ url }) => {
     const channel = url.replace(/\/$/, "").split("/").pop();
     // Kick embed oficial (si cambian su estructura lo actualizamos)
-    const src = `https://players.kick.com/${channel}/embed`;
+    const src = `https://kick.com/${channel}/embed`;
     return (
       <div className="embed-wrap">
         <iframe title="kick" src={src} allowFullScreen frameBorder="0" />

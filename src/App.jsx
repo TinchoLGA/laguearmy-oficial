@@ -5,17 +5,17 @@ export default function App() {
   const [latestArtVideo, setLatestArtVideo] = useState(null);
   const [showEmbed, setShowEmbed] = useState("none");
 
-  // 🔧 Config
+  // Configuración general
   const config = {
     twitchUrl: "https://www.twitch.tv/tincholga",
-    kickUrl: "https://kick.com/tincholis-lga",
+    kickUrl: "https://kick.com/tincholis-lga", // <- corregido formato embed
     youtubeChannelId: "UCSMdFWEs3smhKGbpb8BAZ1A", // canal gamer
     youtubeArtChannelId: "UCLTue1FuQ4Y9PvcyuvwdMQ", // canal artístico
     apiKey: "AIzaSyDdTnC50jZgmJ7FuAJYVlhUIk6jhIFd8QE",
     domain: "laguearmy-oficial.vercel.app"
   };
 
-  // 📺 Obtener últimos videos
+  // Obtener últimos videos
   useEffect(() => {
     async function fetchLatest(channelId, setter) {
       try {
@@ -23,12 +23,12 @@ export default function App() {
         const res = await fetch(url);
         const data = await res.json();
         if (data?.items?.length > 0) {
-          const vid = data.items.find(it => it.id.videoId);
+          const vid = data.items.find((it) => it.id.videoId);
           if (vid) {
             setter({
               id: vid.id.videoId,
               title: vid.snippet.title,
-              thumb: vid.snippet.thumbnails.medium.url
+              thumb: vid.snippet.thumbnails.medium.url,
             });
           }
         }
@@ -41,53 +41,36 @@ export default function App() {
     fetchLatest(config.youtubeArtChannelId, setLatestArtVideo);
   }, []);
 
-  // 🎥 EMBEDS
+  // Embeds
   const TwitchEmbed = ({ url }) => {
     const channel = url.split("/").pop();
     const src = `https://player.twitch.tv/?channel=${channel}&parent=${config.domain}&muted=false&autoplay=false`;
     return (
       <div className="embed-wrap">
-        <iframe
-          title="Twitch"
-          src={src}
-          allowFullScreen
-          frameBorder="0"
-        ></iframe>
+        <iframe title="Twitch" src={src} allowFullScreen frameBorder="0"></iframe>
       </div>
     );
   };
 
   const KickEmbed = ({ url }) => {
     const channel = url.split("/").pop();
-    const src = `https://player.kick.com/${channel}?autoplay=false`;
+    const src = `https://kick.com/embed/${channel}`; // ✅ nuevo formato funcional
     return (
       <div className="embed-wrap">
-        <iframe
-          title="Kick"
-          src={src}
-          allowFullScreen
-          frameBorder="0"
-        ></iframe>
+        <iframe title="Kick" src={src} allowFullScreen frameBorder="0"></iframe>
       </div>
     );
   };
 
-  // 🎞️ Video de YouTube
   const YouTubeEmbed = ({ videoId }) => {
     const src = `https://www.youtube.com/embed/${videoId}`;
     return (
       <div className="embed-wrap">
-        <iframe
-          title="YouTube"
-          src={src}
-          allowFullScreen
-          frameBorder="0"
-        ></iframe>
+        <iframe title="YouTube" src={src} allowFullScreen frameBorder="0"></iframe>
       </div>
     );
   };
 
-  // 🎨 Render principal
   return (
     <div className="root">
       <header className="header">

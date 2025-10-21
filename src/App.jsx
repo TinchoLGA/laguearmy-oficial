@@ -226,8 +226,7 @@ export default function App() {
           {state.showEmbed === "youtube" && <YouTubeEmbed url={state.youtube} />}
 
           <div className="mt-3 text-xs text-slate-400 text-center">
-            <strong>Nota:</strong> Twitch requiere el parámetro <code>parent</code> coincida con tu dominio.
-          </div>
+        </div>
         </section>
 
         <footer className="text-center text-xs text-slate-500 py-6">

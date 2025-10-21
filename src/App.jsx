@@ -1,182 +1,156 @@
 import React, { useState, useEffect } from "react";
 
-export default function App() {
-  const defaults = {
-    brandName: "LAGUEARMY",
-    title: "Bienvenido a la LagueArmy",
-    color: "#00BFFF",
-    twitch: "https://www.twitch.tv/tincholga/",
-    kick: "https://kick.com/tinchulis-lga",
-    youtube: "https://www.youtube.com/@tincholga",
-    youtubeArt: "https://www.youtube.com/@TinchoHH",
-    showEmbed: "twitch",
-  };
+/**
+ * Recomendaciones:
+ * - Asegurate de que /Miniatura.png exista en public/ o en /dist/
+ * - Actualizá los channel URLs o los IDs si cambiás de canal
+ */
 
-  const [state, setState] = useState(defaults);
+export default function App() {
   const [latestVideo, setLatestVideo] = useState(null);
   const [latestArtVideo, setLatestArtVideo] = useState(null);
+  const [showEmbed, setShowEmbed] = useState("none"); // "twitch" | "kick" | "youtube" | "none"
 
+  // --- Config (modificá si querés) ---
+  const config = {
+    twitchUrl: "https://www.twitch.tv/tincholga", // cambiar si hace falta
+    kickUrl: "https://kick.com/tinchulis-lga",     // cambiar si hace falta
+    youtubeChannelId: "UC5DMwFEs3smhK6WbgDBatZA",  // canal gamer (ejemplo)
+    youtubeArtChannelId: "UCLTue1FuQ4Y0yPYcvuwvdMQ", // canal artístico
+    gApiKey: "AIzaSyDdTnC50jZgmJ7FuAJYVlhUIk6jhIFd8QE", // tu API key
+  };
+
+  // --- Obtener últimos videos YouTube (gamer + artístico) ---
   useEffect(() => {
-    async function fetchVideos() {
+    async function fetchLatest(channelId, setter) {
       try {
-        const apiKey = "AIzaSyDdTnC50jZgmJ7FuAJYVlhUIk6jhIFd8QE";
-
-        // Canal gamer
-        const res1 = await fetch(
-          `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=UC5DMwFEs3smhK6WbgDBatZA&part=snippet,id&order=date&maxResults=1`
-        );
-        const data1 = await res1.json();
-        if (data1.items?.length) {
-          const video = data1.items[0];
-          setLatestVideo({
-            id: video.id.videoId,
-            title: video.snippet.title,
-            thumbnail: video.snippet.thumbnails.high.url,
-          });
+        const url = `https://www.googleapis.com/youtube/v3/search?key=${config.gApiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=4`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data && data.items && data.items.length > 0) {
+          // Tomamos el primer video válido con videoId
+          const vid = data.items.find((it) => it.id && it.id.videoId);
+          if (vid) {
+            setter({
+              id: vid.id.videoId,
+              title: vid.snippet.title,
+              thumb: vid.snippet.thumbnails?.high?.url || vid.snippet.thumbnails?.medium?.url,
+            });
+          }
         }
-
-        // Canal artístico
-        const res2 = await fetch(
-          `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=UCLTue1FuQ4Y0yPYcvuwvdMQ&part=snippet,id&order=date&maxResults=1`
-        );
-        const data2 = await res2.json();
-        if (data2.items?.length) {
-          const video = data2.items[0];
-          setLatestArtVideo({
-            id: video.id.videoId,
-            title: video.snippet.title,
-            thumbnail: video.snippet.thumbnails.high.url,
-          });
-        }
-      } catch (error) {
-        console.error("Error al obtener los videos:", error);
+      } catch (e) {
+        console.error("YouTube fetch error:", e);
       }
     }
-    fetchVideos();
+
+    fetchLatest(config.youtubeChannelId, setLatestVideo);
+    fetchLatest(config.youtubeArtChannelId, setLatestArtVideo);
   }, []);
 
-  const TwitchEmbed = ({ channel }) => {
+  // --- Helpers para embeds ---
+  const TwitchEmbed = ({ url }) => {
+    const channel = url.replace(/\/$/, "").split("/").pop();
     const parent = window.location.hostname || "localhost";
-    const channelName = channel.split("/").filter(Boolean).pop();
-    const src = `https://player.twitch.tv/?channel=${channelName}&parent=${parent}`;
+    const src = `https://player.twitch.tv/?channel=${channel}&parent=${parent}&muted=false&autoplay=false`;
     return (
-      <iframe
-        title="Twitch Stream"
-        src={src}
-        allowFullScreen
-        className="w-full h-64 md:h-96 rounded-lg border border-gray-700"
-      ></iframe>
+      <div className="embed-wrap">
+        <iframe title="twitch" src={src} allowFullScreen frameBorder="0" />
+      </div>
     );
   };
 
-  const KickEmbed = ({ channel }) => {
-    const channelName = channel.split("/").filter(Boolean).pop();
-    const src = `https://player.kick.com/${channelName}`;
+  const KickEmbed = ({ url }) => {
+    const channel = url.replace(/\/$/, "").split("/").pop();
+    // Kick embed oficial (si cambian su estructura lo actualizamos)
+    const src = `https://players.kick.com/${channel}/embed`;
     return (
-      <iframe
-        title="Kick Stream"
-        src={src}
-        allowFullScreen
-        className="w-full h-64 md:h-96 rounded-lg border border-gray-700"
-      ></iframe>
+      <div className="embed-wrap">
+        <iframe title="kick" src={src} allowFullScreen frameBorder="0" />
+      </div>
     );
   };
 
-  const YouTubeEmbed = ({ channelId }) => {
-    const src = `https://www.youtube.com/embed/live_stream?channel=${channelId}`;
+  const YouTubeLiveEmbed = ({ channelId }) => {
+    // Embed stream (muestra en vivo si hay)
+    const src = `https://www.youtube.com/embed/live_stream?channel=${channelId}&autoplay=0`;
     return (
-      <iframe
-        title="YouTube Stream"
-        src={src}
-        allowFullScreen
-        className="w-full h-64 md:h-96 rounded-lg border border-gray-700"
-      ></iframe>
+      <div className="embed-wrap">
+        <iframe title="youtube-live" src={src} allowFullScreen frameBorder="0" />
+      </div>
     );
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white p-6">
-      <div className="max-w-5xl mx-auto">
-        {/* Banner */}
-        <header className="relative rounded-2xl overflow-hidden mb-6 shadow-lg">
-          <div className="h-56 bg-gradient-to-r from-blue-800 to-indigo-900 flex flex-col items-center justify-center text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-cyan-400 drop-shadow-lg">
-              Bienvenido a la LagueArmy
-            </h1>
-            <p className="text-slate-300 mt-2 text-lg">
-              Tu central gamer • YouTube • Twitch • Kick
-            </p>
+    <div className="page">
+      <main className="container">
+        {/* BANNER */}
+        <section className="banner">
+          <div className="banner-inner">
+            <h1>Bienvenido a la LagueArmy</h1>
+            <p className="sub">Tu central gamer · YouTube · Twitch · Kick</p>
           </div>
-          <div className="absolute left-1/2 transform -translate-x-1/2 -bottom-12">
-            <div className="w-28 h-28 rounded-full ring-4 ring-cyan-400 overflow-hidden bg-white shadow-lg">
-              <img
-                src="/Miniatura.png"
-                alt="Avatar"
-                className="w-full h-full object-cover"
-              />
-            </div>
+          <div className="avatar">
+            <img src="/Miniatura.png" alt="avatar" />
           </div>
-        </header>
+        </section>
 
-        {/* Info */}
-        <div className="mt-16 bg-gray-800 rounded-2xl shadow-lg p-6 text-center">
-          <h2 className="text-3xl font-semibold mb-6" style={{ color: state.color }}>
-            {state.brandName}
-          </h2>
-          <p className="text-slate-300 mb-6">{state.title}</p>
+        {/* CONTROLES / BOTONES */}
+        <section className="controls">
+          <h2 className="brand">LAGUEARMY</h2>
+          <p className="small">Bienvenido a la LagueArmy</p>
 
-          {/* Botones */}
-          <div className="flex flex-wrap justify-center gap-4 mb-6">
-            <a href={state.twitch} target="_blank" rel="noreferrer" className="px-6 py-3 rounded-lg bg-[#6441A5] text-white font-semibold hover:opacity-80">Twitch</a>
-            <a href={state.kick} target="_blank" rel="noreferrer" className="px-6 py-3 rounded-lg bg-[#53FC18] text-black font-semibold hover:opacity-90">Kick</a>
-            <a href={state.youtube} target="_blank" rel="noreferrer" className="px-6 py-3 rounded-lg bg-[#FF0000] text-white font-semibold hover:opacity-80">YouTube Gaming</a>
-            <a href={state.youtubeArt} target="_blank" rel="noreferrer" className="px-6 py-3 rounded-lg bg-[#FF66CC] text-white font-semibold hover:opacity-90">YouTube Artístico</a>
+          <div className="buttons">
+            <a className="btn twitch" href={config.twitchUrl} target="_blank" rel="noreferrer">Twitch</a>
+            <a className="btn kick" href={config.kickUrl} target="_blank" rel="noreferrer">Kick</a>
+            <a className="btn yt" href={`https://www.youtube.com/channel/${config.youtubeChannelId}`} target="_blank" rel="noreferrer">YouTube TinchoLGA</a>
+            <a className="btn yta" href={`https://www.youtube.com/channel/${config.youtubeArtChannelId}`} target="_blank" rel="noreferrer">YouTube Artístico</a>
           </div>
 
-          {/* Transmisiones */}
-          <div className="flex justify-center gap-3 mb-4">
-            <button onClick={() => setState((p) => ({ ...p, showEmbed: "twitch" }))} className={`px-3 py-1 rounded ${state.showEmbed === "twitch" ? "bg-blue-600" : "bg-gray-700"}`}>Twitch</button>
-            <button onClick={() => setState((p) => ({ ...p, showEmbed: "kick" }))} className={`px-3 py-1 rounded ${state.showEmbed === "kick" ? "bg-blue-600" : "bg-gray-700"}`}>Kick</button>
-            <button onClick={() => setState((p) => ({ ...p, showEmbed: "youtube" }))} className={`px-3 py-1 rounded ${state.showEmbed === "youtube" ? "bg-blue-600" : "bg-gray-700"}`}>YouTube</button>
+          <div className="embed-switch">
+            <button onClick={() => setShowEmbed("twitch")} className={showEmbed === "twitch" ? "active" : ""}>Twitch</button>
+            <button onClick={() => setShowEmbed("kick")} className={showEmbed === "kick" ? "active" : ""}>Kick</button>
+            <button onClick={() => setShowEmbed("youtube")} className={showEmbed === "youtube" ? "active" : ""}>YouTube</button>
+            <button onClick={() => setShowEmbed("none")} className={showEmbed === "none" ? "active" : ""}>Ocultar</button>
           </div>
 
-          {state.showEmbed === "twitch" && <TwitchEmbed channel={state.twitch} />}
-          {state.showEmbed === "kick" && <KickEmbed channel={state.kick} />}
-          {state.showEmbed === "youtube" && <YouTubeEmbed channelId="UC5DMwFEs3smhK6WbgDBatZA" />}
-        </div>
+          <div className="embed-area">
+            {showEmbed === "twitch" && <TwitchEmbed url={config.twitchUrl} />}
+            {showEmbed === "kick" && <KickEmbed url={config.kickUrl} />}
+            {showEmbed === "youtube" && <YouTubeLiveEmbed channelId={config.youtubeChannelId} />}
+            {showEmbed === "none" && <div className="embed-placeholder">Seleccioná una plataforma para ver la transmisión en vivo</div>}
+          </div>
+        </section>
 
-        {/* Últimos Videos */}
-        <section className="mt-10 bg-gray-800 rounded-2xl shadow-lg p-6 text-center">
-          <h3 className="text-2xl font-bold mb-4 text-cyan-400">🎥 Últimos videos</h3>
-          <div className="grid md:grid-cols-2 gap-6">
+        {/* ÚLTIMOS VIDEOS */}
+        <section className="videos">
+          <h3>Últimos videos</h3>
+          <div className="video-grid">
             {latestVideo ? (
-              <div>
+              <article className="video-card">
                 <a href={`https://www.youtube.com/watch?v=${latestVideo.id}`} target="_blank" rel="noreferrer">
-                  <img src={latestVideo.thumbnail} alt={latestVideo.title} className="mx-auto rounded-lg shadow-lg hover:opacity-80 transition" />
+                  <img src={latestVideo.thumb} alt={latestVideo.title} />
                 </a>
-                <p className="mt-3 text-lg font-medium">{latestVideo.title}</p>
-              </div>
+                <h4>{latestVideo.title}</h4>
+              </article>
             ) : (
-              <p className="text-slate-400">Cargando video gamer...</p>
+              <div className="video-loading">Cargando video gamer...</div>
             )}
 
             {latestArtVideo ? (
-              <div>
+              <article className="video-card">
                 <a href={`https://www.youtube.com/watch?v=${latestArtVideo.id}`} target="_blank" rel="noreferrer">
-                  <img src={latestArtVideo.thumbnail} alt={latestArtVideo.title} className="mx-auto rounded-lg shadow-lg hover:opacity-80 transition" />
+                  <img src={latestArtVideo.thumb} alt={latestArtVideo.title} />
                 </a>
-                <p className="mt-3 text-lg font-medium">{latestArtVideo.title}</p>
-              </div>
+                <h4>{latestArtVideo.title}</h4>
+              </article>
             ) : (
-              <p className="text-slate-400">Cargando video artístico...</p>
+              <div className="video-loading">Cargando video artístico...</div>
             )}
           </div>
         </section>
 
-        <footer className="text-center text-slate-500 text-xs py-6">
-          LagueArmy • Hecho con ❤️ para la comunidad gamer
-        </footer>
-      </div>
+        <footer className="footer">LagueArmy — Hecho con ❤️</footer>
+      </main>
     </div>
   );
 }

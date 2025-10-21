@@ -1,10 +1,10 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-// ✅ Configuración compatible con Render (ESM correcta)
+// ✅ Configuración lista para Render
 export default defineConfig({
   plugins: [react()],
-  base: "",
+  base: "./", // 👈 Esto arregla los estilos
   server: {
     host: true,
     allowedHosts: [
@@ -16,10 +16,5 @@ export default defineConfig({
   build: {
     outDir: "dist",
     sourcemap: false,
-  },
-  optimizeDeps: {
-    esbuildOptions: {
-      target: "esnext",
-    },
   },
 });

@@ -59,16 +59,24 @@ export default function App() {
     );
   };
 
-  const KickEmbed = ({ url }) => {
-    const channel = url.replace(/\/$/, "").split("/").pop();
-    // Kick embed oficial (si cambian su estructura lo actualizamos)
-    const src = `https://players.kick.com/${channel}/embed`;
+    const KickEmbed = ({channel}) => {
+    const channelSlug = channelFromUrl(channel) || channel;
+    const cleanSlug = channelSlug.replace(/^https?:\/\/(www\.)?kick\.com\//, "");
+    const src = `https://player.kick.com/${encodeURIComponent(cleanSlug)}`;
+
     return (
-      <div className="embed-wrap">
-        <iframe title="kick" src={src} allowFullScreen frameBorder="0" />
+      <div className="w-full h-64 md:h-96 bg-black rounded overflow-hidden">
+        <iframe
+          title="Kick"
+          src={src}
+          allowFullScreen
+          className="w-full h-full"
+          frameBorder="0"
+        />
       </div>
     );
   };
+
 
   const YouTubeLiveEmbed = ({ channelId }) => {
     // Embed stream (muestra en vivo si hay)

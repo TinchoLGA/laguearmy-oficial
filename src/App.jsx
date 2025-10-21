@@ -6,13 +6,13 @@ const App = () => {
   const [gamingVideo, setGamingVideo] = useState(null);
   const [musicVideo, setMusicVideo] = useState(null);
 
-  // IDs y claves desde las variables de entorno (Render)
-  const gamingChannelId = "UC5DMwFEs3smhK6WbgDBatZA";
-  const musicChannelId = "UCLTue1FuQ4Y0yPYcvuwvdMQ";
+  // IDs y claves
+  const gamingChannelId = "UC5DMwFEs3smhK6WbgDBatZA"; // Gaming
+  const musicChannelId = "UCLTue1FuQ4Y0yPYcvuwvdMQ"; // Música
   const gamingApiKey = import.meta.env.VITE_YT_API_KEY_GAMING;
   const musicApiKey = import.meta.env.VITE_YT_API_KEY_MUSIC;
 
-  // Obtener último video Gaming
+  // Último video Gaming
   useEffect(() => {
     fetch(
       `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${gamingChannelId}&maxResults=1&order=date&type=video&key=${gamingApiKey}`
@@ -21,12 +21,12 @@ const App = () => {
       .then((data) => {
         const video = data.items?.[0]?.id?.videoId;
         setGamingVideo(video);
-        if (!currentVideo) setCurrentVideo(video); // por defecto el reproductor arranca con el último video gaming
+        if (!currentVideo) setCurrentVideo(video);
       })
       .catch((err) => console.error("Error al obtener video Gaming:", err));
   }, []);
 
-  // Obtener último video Música
+  // Último video Música
   useEffect(() => {
     fetch(
       `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${musicChannelId}&maxResults=1&order=date&type=video&key=${musicApiKey}`
@@ -39,15 +39,16 @@ const App = () => {
       .catch((err) => console.error("Error al obtener video Música:", err));
   }, []);
 
-  // Control del reproductor
+  // Reproductor principal
   const renderPlayer = () => {
     if (selectedPlatform === "twitch") {
       return (
         <iframe
-          src="https://player.twitch.tv/?channel=tincholga&parent=render.com&autoplay=true"
+          src="https://player.twitch.tv/?channel=tincholga&parent=laguearmy-oficial.onrender.com&autoplay=true"
           height="500"
           width="100%"
           allowFullScreen
+          frameBorder="0"
         ></iframe>
       );
     } else if (selectedPlatform === "kick") {
@@ -57,6 +58,7 @@ const App = () => {
           height="500"
           width="100%"
           allowFullScreen
+          frameBorder="0"
         ></iframe>
       );
     } else if (selectedPlatform === "youtube" && currentVideo) {
@@ -99,7 +101,7 @@ const App = () => {
       {/* Reproductor principal */}
       <div className="player-container">{renderPlayer()}</div>
 
-      {/* Últimos videos */}
+      {/* Últimos videos Gaming */}
       <section className="videos-section">
         <h3>🎮 Últimos Videos Gaming</h3>
         {gamingVideo && (
@@ -118,20 +120,20 @@ const App = () => {
         )}
       </section>
 
+      {/* Últimos videos Música */}
       <section className="videos-section">
         <h3>🎵 Últimos Videos Música</h3>
         {musicVideo && (
-          <div
-            className="video-thumbnail"
-            onClick={() => {
-              setSelectedPlatform("youtube");
-              setCurrentVideo(musicVideo);
-            }}
-          >
-            <img
-              src={`https://img.youtube.com/vi/${musicVideo}/hqdefault.jpg`}
-              alt="Último video música"
-            />
+          <div className="video-thumbnail-music">
+            <iframe
+              width="300"
+              height="170"
+              src={`https://www.youtube.com/embed/${musicVideo}?autoplay=1&controls=1&modestbranding=1`}
+              title="Último video música"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              frameBorder="0"
+            ></iframe>
           </div>
         )}
       </section>

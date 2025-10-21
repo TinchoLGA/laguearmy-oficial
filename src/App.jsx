@@ -59,23 +59,24 @@ export default function App() {
     );
   };
 
-    const KickEmbed = ({channel}) => {
-    const channelSlug = channelFromUrl(channel) || channel;
-    const cleanSlug = channelSlug.replace(/^https?:\/\/(www\.)?kick\.com\//, "");
-    const src = `https://player.kick.com/${encodeURIComponent(cleanSlug)}`;
+    const KickEmbed = ({ channel }) => {
+  const channelSlug = channelFromUrl(channel) || channel;
+  const cleanSlug = channelSlug.replace(/^https?:\/\/(www\.)?kick\.com\//, "");
+  const src = `https://player.kick.com/${encodeURIComponent(cleanSlug)}`;
 
-    return (
-      <div className="w-full h-64 md:h-96 bg-black rounded overflow-hidden">
-        <iframe
-          title="Kick"
-          src={src}
-          allowFullScreen
-          className="w-full h-full"
-          frameBorder="0"
-        />
-      </div>
-    );
-  };
+  return (
+    <div className="w-full h-64 md:h-96 bg-black rounded overflow-hidden">
+      <iframe
+        title="Kick"
+        src={src}
+        allowFullScreen
+        className="w-full h-full"
+        frameBorder="0"
+      />
+    </div>
+  );
+};
+
 
 
   const YouTubeLiveEmbed = ({ channelId }) => {

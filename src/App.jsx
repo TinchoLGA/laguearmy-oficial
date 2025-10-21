@@ -1,44 +1,31 @@
 import React, { useState, useEffect } from "react";
 
-/**
- * Recomendaciones:
- * - Asegúrate de que /Miniatura.png exista en /public/ o en /dist/
- * - Actualizá los channel URLs o los IDs si cambiás de canal
- */
-
 export default function App() {
   const [latestVideo, setLatestVideo] = useState(null);
   const [latestArtVideo, setLatestArtVideo] = useState(null);
-  const [showEmbed, setShowEmbed] = useState("none"); // "twitch" | "kick" | "youtube" | "none"
+  const [showEmbed, setShowEmbed] = useState("none");
 
-  // --- Configuración (ajustá si querés) ---
+  // 🔧 Configuración de tus canales
   const config = {
     twitchUrl: "https://www.twitch.tv/tincholga",
-    kickUrl: "https://kick.com/tincholisl-lga",
-    youtubeChannelId: "UCSDMfweS3smhKGbbpBBtaZA",
-    youtubeArtChannelId: "UCLTue1FuQ4Y0yPYcvuwvdMQ",
+    kickUrl: "https://kick.com/tincholislga",
+    youtubeChannelId: "UC5DMFwES3smhKGbbpDBta2A",
+    youtubeArtChannelId: "UCLTue1FuQ4Vp9PycuvvndMQ",
     apiKey: "AIzaSyDdTnC50jZgmJ7FuAJYVlhUIk6jhIFd8QE",
   };
 
-  // --- Obtener últimos videos de YouTube (canal gamer y artístico) ---
+  // 🧠 Obtener último video de YouTube (Gaming y Artístico)
   useEffect(() => {
     async function fetchLatest(channelId, setter) {
       try {
         const url = `https://www.googleapis.com/youtube/v3/search?key=${config.apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=1`;
         const res = await fetch(url);
         const data = await res.json();
-        if (data && data.items.length > 0) {
-          const vid = data.items.find((it) => it.id && it.id.videoId);
-          if (vid) {
-            setter({
-              id: vid.id.videoId,
-              title: vid.snippet.title,
-              thumbnail: vid.snippet.thumbnails.medium.url,
-            });
-          }
+        if (data.items && data.items.length > 0) {
+          setter(data.items[0].id.videoId);
         }
-      } catch (err) {
-        console.error("Error al obtener videos:", err);
+      } catch (e) {
+        console.error("Error al obtener videos:", e);
       }
     }
 
@@ -46,124 +33,109 @@ export default function App() {
     fetchLatest(config.youtubeArtChannelId, setLatestArtVideo);
   }, []);
 
-  // --- Embed components ---
+  // 🎥 Componentes de streaming
+  const TwitchEmbed = () => (
+    <iframe
+      title="Twitch Stream"
+      src={`https://player.twitch.tv/?channel=${config.twitchUrl.split("/").pop()}&parent=${window.location.hostname}`}
+      frameBorder="0"
+      allowFullScreen
+      className="stream-frame"
+    />
+  );
 
-  const TwitchEmbed = ({ url }) => {
-    const channel = url.replace(/https:\/\/www\.twitch\.tv\//, "");
-    const parent = window.location.hostname;
-    const src = `https://player.twitch.tv/?channel=${channel}&parent=${parent}&muted=false&autoplay=false`;
-    return (
-      <div className="embed-container">
-        <iframe title="Twitch" src={src} allowFullScreen frameBorder="0" />
-      </div>
+  const KickEmbed = () => (
+    <iframe
+      title="Kick Stream"
+      src={`https://player.kick.com/${config.kickUrl.split("/").pop()}`}
+      frameBorder="0"
+      allowFullScreen
+      className="stream-frame"
+      onError={(e) => {
+        e.target.outerHTML = `<div class='kick-fallback'>
+          <p>No se puede cargar el stream de Kick 😔</p>
+          <a href='${config.kickUrl}' target='_blank' class='kick-button'>Ver en Kick</a>
+        </div>`;
+      }}
+    />
+  );
+
+  const YouTubeEmbed = ({ videoId }) =>
+    videoId ? (
+      <iframe
+        title="YouTube Video"
+        src={`https://www.youtube.com/embed/${videoId}`}
+        frameBorder="0"
+        allowFullScreen
+        className="stream-frame"
+      />
+    ) : (
+      <p>Cargando video...</p>
     );
-  };
 
-  const KickEmbed = ({ url }) => {
-    const channel = url.replace(/https:\/\/kick\.com\//, "");
-    const src = `https://player.kick.com/${channel}`;
-
-    // Fallback si Kick no permite embebido
-    return (
-      <div className="embed-container">
-        <iframe
-          title="Kick"
-          src={src}
-          allowFullScreen
-          frameBorder="0"
-          onError={(e) => {
-            e.target.style.display = "none";
-            const msg = document.createElement("div");
-            msg.className = "embed-error";
-            msg.innerHTML = `
-              <p>⚠️ Kick no permite mostrar el stream embebido.</p>
-              <a href="${url}" target="_blank" rel="noopener noreferrer" class="kick-button">Ver en Kick</a>
-            `;
-            e.target.parentNode.appendChild(msg);
-          }}
-        />
-      </div>
-    );
-  };
-
-  const YouTubeLiveEmbed = ({ channelId }) => {
-    const src = `https://www.youtube.com/embed/live_stream?channel=${channelId}&autoplay=0`;
-    return (
-      <div className="embed-container">
-        <iframe title="YouTube Live" src={src} allowFullScreen frameBorder="0" />
-      </div>
-    );
-  };
-
-  // --- Render ---
   return (
-    <div className="app-container">
+    <div className="container">
+      {/* Banner */}
       <header className="banner">
-        <img src="/Miniatura.png" alt="Avatar" className="avatar" />
-        <div className="banner-text">
+        <img src="Miniatura.png" alt="Avatar" className="avatar" />
+        <div className="title">
           <h1>LAGUEARMY</h1>
           <p>Bienvenido a la LagueArmy</p>
         </div>
       </header>
 
+      {/* Botones de plataformas */}
       <div className="buttons">
-        <button
-          className={showEmbed === "twitch" ? "active" : ""}
-          onClick={() => setShowEmbed("twitch")}
-        >
+        <button onClick={() => setShowEmbed("twitch")} className="btn twitch">
           Twitch
         </button>
-        <button
-          className={showEmbed === "kick" ? "active" : ""}
-          onClick={() => setShowEmbed("kick")}
-        >
+        <button onClick={() => setShowEmbed("kick")} className="btn kick">
           Kick
         </button>
-        <button
-          className={showEmbed === "youtube" ? "active" : ""}
-          onClick={() => setShowEmbed("youtube")}
-        >
+        <button onClick={() => setShowEmbed("youtube")} className="btn yt-gamer">
           YouTube TinchoLGA
         </button>
-        <button
-          className={showEmbed === "art" ? "active" : ""}
-          onClick={() => setShowEmbed("art")}
-        >
+        <button onClick={() => setShowEmbed("art")} className="btn yt-art">
           YouTube Artístico
         </button>
       </div>
 
-      <div className="player">
-        {showEmbed === "twitch" && <TwitchEmbed url={config.twitchUrl} />}
-        {showEmbed === "kick" && <KickEmbed url={config.kickUrl} />}
-        {showEmbed === "youtube" && (
-          <YouTubeLiveEmbed channelId={config.youtubeChannelId} />
-        )}
-        {showEmbed === "art" && (
-          <YouTubeLiveEmbed channelId={config.youtubeArtChannelId} />
-        )}
+      {/* Pantalla del stream */}
+      <div className="embed-section">
+        {showEmbed === "twitch" && <TwitchEmbed />}
+        {showEmbed === "kick" && <KickEmbed />}
+        {showEmbed === "youtube" && <YouTubeEmbed videoId={latestVideo} />}
+        {showEmbed === "art" && <YouTubeEmbed videoId={latestArtVideo} />}
       </div>
 
+      {/* Últimos videos */}
       <section className="videos">
         <h2>Últimos videos</h2>
-        <div className="video-grid">
+        <div className="video-list">
           {latestVideo && (
-            <div className="video-card">
-              <img src={latestVideo.thumbnail} alt={latestVideo.title} />
-              <p>{latestVideo.title}</p>
-            </div>
+            <iframe
+              title="Último video gaming"
+              src={`https://www.youtube.com/embed/${latestVideo}`}
+              frameBorder="0"
+              allowFullScreen
+            />
           )}
           {latestArtVideo && (
-            <div className="video-card">
-              <img src={latestArtVideo.thumbnail} alt={latestArtVideo.title} />
-              <p>{latestArtVideo.title}</p>
-            </div>
+            <iframe
+              title="Último video artístico"
+              src={`https://www.youtube.com/embed/${latestArtVideo}`}
+              frameBorder="0"
+              allowFullScreen
+            />
           )}
         </div>
       </section>
 
+      {/* Footer */}
       <footer>
-        <p>LagueArmy • Hecho con ❤️</p>
+        <p>
+          LagueArmy · Hecho con <span className="heart">❤</span>
+        </p>
       </footer>
     </div>
   );
